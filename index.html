@@ -2,733 +2,137 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Win Rewards | Tasks & Redeem Codes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slasher Admin | Direct Credit Dispatcher</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
-    
     <style>
-        :root {
-            --bg: #020617;
-            --gold: #fbbf24;
-            --card: rgba(30, 41, 59, 0.7);
-            --accent: #6366f1;
-            --premium-grad: linear-gradient(135deg, #1e1b4b, #311042);
-            --green: #10b981;
-        }
-
-        body {
-            font-family: 'Outfit', sans-serif;
-            background: var(--bg);
-            color: white;
-            margin: 0;
-            overflow-x: hidden;
-        }
-
-        header {
-            padding: 18px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(15, 23, 42, 0.9);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-        }
-
-        .logo {
-            font-weight: 800;
-            color: var(--gold);
-            letter-spacing: 1px;
-            font-size: 14px;
-            text-transform: uppercase;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .credit-display {
-            background: rgba(251, 191, 36, 0.15);
-            border: 1px solid var(--gold);
-            padding: 6px 12px;
-            border-radius: 50px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-weight: 700;
-            font-size: 13px;
-            color: var(--gold);
-        }
-
-        .notif-trigger {
-            position: relative;
-            cursor: pointer;
-            font-size: 22px;
-            color: var(--gold);
-        }
-
-        #badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #ef4444;
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 50%;
-            display: none;
-            border: 2px solid var(--bg);
-        }
-
-        .credit-earning-section {
-            padding: 15px;
-            max-width: 450px;
-            margin: 0 auto;
-            box-sizing: border-box;
-            display: none;
-        }
-        
-        .credit-section-title {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #64748b;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .credit-buttons-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-
-        .btn-earn-credit {
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: white;
-            border-radius: 12px;
-            padding: 12px 6px;
-            font-size: 11px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s ease;
-        }
-
-        .btn-earn-credit i {
-            color: var(--gold);
-            font-size: 16px;
-        }
-
-        .btn-earn-credit:hover {
-            border-color: var(--gold);
-            background: #1e293b;
-        }
-
-        #fullScreenNotif {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg);
-            z-index: 2000;
-            flex-direction: column;
-            padding: 25px;
-            box-sizing: border-box;
-            overflow-y: auto;
-        }
-
-        .fs-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 15px;
-        }
-
-        .notif-card {
-            background: var(--card);
-            padding: 20px;
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 20px;
-            position: relative;
-            animation: fadeInUp 0.4s ease;
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 18px;
-        }
-
-        .btn-n {
-            flex: 1;
-            padding: 14px;
-            border-radius: 12px;
-            border: none;
-            font-weight: 700;
-            cursor: pointer;
-            font-size: 13px;
-            text-decoration: none;
-            text-align: center;
-        }
-
-        .btn-back { background: #334155; color: white; }
-        .btn-join { background: var(--gold); color: #000; }
-
-        .btn-delete-local {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            color: #ef4444;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .floating-btn {
-            position: fixed;
-            bottom: 25px;
-            right: 20px;
-            background: linear-gradient(105deg, #4f46e5, #a855f7);
-            color: white;
-            padding: 14px 22px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 14px;
-            display: none;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            z-index: 999;
-            border: 1px solid rgba(255,255,255,0.2);
-            animation: float 3s infinite ease-in-out;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
-
-        .container {
-            padding: 15px;
-            max-width: 450px;
-            margin: auto;
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            width: 100%;
-        }
-
-        .btn-main {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 3 / 4;
-            background: var(--card);
-            border-radius: 20px;
-            text-decoration: none;
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .btn-main:hover {
-            transform: translateY(-5px);
-            border-color: var(--gold);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-        }
-
-        .btn-main.is-premium-locked {
-            background: var(--premium-grad);
-            border-color: rgba(168, 85, 247, 0.4);
-        }
-
-        .card-img {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover; object-position: center;
-            transition: transform 0.4s ease; z-index: 1;
-        }
-
-        .btn-main:hover .card-img { transform: scale(1.06); }
-
-        .card-content {
-            position: relative; z-index: 2; width: 100%; padding: 15px;
-            box-sizing: border-box;
-            background: linear-gradient(to top, rgba(2, 6, 23, 1) 0%, rgba(2, 6, 23, 0.8) 50%, rgba(2, 6, 23, 0.2) 80%, transparent 100%);
-            display: flex; justify-content: space-between; align-items: center; gap: 8px;
-        }
-
-        .card-title {
-            font-weight: 700; font-size: 14px; line-height: 1.3; color: #ffffff;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.9);
-            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-            overflow: hidden; flex: 1;
-        }
-
-        .card-icon {
-            font-size: 12px; color: var(--gold); flex-shrink: 0;
-            background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255,255,255,0.1);
-            padding: 8px; border-radius: 50%; width: 28px; height: 28px;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        .card-icon.lock-icon {
-            color: #a855f7; background: rgba(15, 23, 42, 0.95); border-color: rgba(168, 85, 247, 0.5);
-        }
-
-        #htmlCodeModal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #020617; z-index: 3000; flex-direction: column;
-        }
-
-        .html-modal-header {
-            padding: 12px 20px; background: #0f172a;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            display: flex; justify-content: space-between; align-items: center;
-            height: 55px; box-sizing: border-box;
-        }
-
-        .html-frame { width: 100%; height: calc(100% - 55px); border: none; background: #020617; }
-        
-        .device-info-bar {
-            text-align: center; font-size: 10px; color: #475569;
-            padding: 5px; font-family: monospace; background: #090d16;
-        }
+        body { background: #030712; color: #fff; font-family: sans-serif; text-align: center; padding: 40px 20px; margin:0; }
+        .box { background: #111827; padding: 30px; border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.08); max-width: 380px; margin: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .panel-badge { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); padding: 4px 12px; border-radius: 50px; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; display: inline-block; margin-bottom: 15px; }
+        .icon { font-size: 50px; color: #fbbf24; margin-bottom: 20px; }
+        .icon.animated { animation: pulse 1.5s infinite; }
+        .bar-bg { background: #1f2937; height: 8px; border-radius: 10px; margin: 25px 0; overflow: hidden; }
+        .bar-fill { background: linear-gradient(90deg, #10b981, #059669); height: 100%; width: 0%; transition: width 1s linear; }
+        .status { font-weight: bold; color: #94a3b8; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 15px; }
+        .device-display { background: #090d16; padding: 14px; border: 1px solid #1e293b; border-radius: 12px; color: #fbbf24; font-size: 16px; font-weight: bold; letter-spacing: 1px; margin-top: 10px; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
     </style>
 </head>
 <body>
+    <div class="box">
+        <div class="panel-badge"><i class="fas fa-robot"></i> credit points center</div>
+        <div id="iconContainer"><i class="fas fa-bolt icon animated"></i></div>
+        <h2 style="margin:0 0 10px 0; font-size: 20px;"> Credit Points </h2>
+        <p style="color:#64748b; font-size:13px; margin:0 0 15px 0;" id="descText">Wait 2 seconds...</p>
 
-<header>
-    <div class="logo">EASY TASKS • WIN REWARDS</div>
-    <div class="header-right">
-        <div class="credit-display">
-            <i class="fas fa-coins"></i>
-            <span id="userCredits">0</span> Cr
+        <div id="deviceBox" style="display:none; margin-top: 15px; text-align: left;">
+            <span style="font-size: 11px; color: #94a3b8; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px;"><i class="fas fa-terminal"></i> User  Profile name </span>
+            <div id="deviceIdLabel" class="device-display">SEARCHING...</div>
         </div>
-        <div class="notif-trigger" onclick="openNotifs()">
-            <i class="fas fa-bell"></i>
-            <span id="badge">0</span>
-        </div>
-    </div>
-</header>
-
-<div class="device-info-bar">DEVICE ID: <span id="deviceIdDisplay">Generating...</span></div>
-
-<div class="credit-earning-section" id="creditSection">
-    <div class="credit-section-title">Get Credit Points</div>
-    <div class="credit-buttons-grid" id="creditButtonsGrid"></div>
-</div>
-
-<a href="#" id="floatingBtn" class="floating-btn" target="_blank">
-    <i class="fas fa-download"></i>
-    <span id="fText">Download App</span>
-</a>
-
-<div id="htmlCodeModal">
-    <div class="html-modal-header">
-        <h3 id="htmlModalTitle" style="margin:0; font-size:16px; font-weight:700; color:var(--gold); text-transform:uppercase;">Task Panel</h3>
-        <button id="modalExitBtn" onclick="closeCodeEngine()" style="background: rgba(255,255,255,0.1); border: none; color: white; padding: 6px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px;">
-            <i class="fas fa-arrow-left"></i> EXIT
-        </button>
-    </div>
-    <iframe id="sandboxFrame" class="html-frame"></iframe>
-</div>
-
-<div id="fullScreenNotif">
-    <div class="fs-header">
-        <h2 style="margin:0; font-size: 24px;">Inbox</h2>
-        <i class="fas fa-times" style="font-size: 28px; cursor: pointer;" onclick="closeNotifs()"></i>
-    </div>
-    <div id="notifList"></div>
-</div>
-
-<div class="container">
-    <div class="grid-container" id="buttonContainer">
-        <p style="text-align:center; color:#64748b; grid-column: span 2;">Loading Tasks...</p>
-    </div>
-</div>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-    const firebaseConfig = { 
-        apiKey: "AIzaSyDnM9ry5JreqjRXqQVUSiaBzudXuaAF-QI", 
-        databaseURL: "https://send-message-b178e-default-rtdb.asia-southeast1.firebasedatabase.app" 
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    // --- SECURE PERSISTENT HARDWARE SPEC FINGERPRINT GENERATOR ---
-    function fetchOrCreateHardwareIdentity() {
-        if(localStorage.getItem('device_fingerprint_id')) {
-            return localStorage.getItem('device_fingerprint_id');
-        }
-        const userAgentString = window.navigator.userAgent.replace(/[^a-zA-Z]/g, '').slice(0, 5);
-        const physicalScreenDimensions = window.screen.height * window.screen.width;
-        const cryptRandomSalt = Math.floor(Math.random() * 899999 + 100000);
-        const cleanDerivedId = `${userAgentString}-${physicalScreenDimensions}-${cryptRandomSalt}`.toUpperCase();
-        localStorage.setItem('device_fingerprint_id', cleanDerivedId);
-        return cleanDerivedId;
-    }
-    
-    const deviceId = fetchOrCreateHardwareIdentity();
-    window.ACTIVE_DEVICE_ID = deviceId; // Set directly to runtime globally
-    document.getElementById('deviceIdDisplay').innerText = deviceId;
-
-    // --- COMPREHENSIVE BALANCES TRACKING LOGIC ---
-    if(!localStorage.getItem('user_credits')) localStorage.setItem('user_credits', '0');
-    if(!localStorage.getItem('unlocked_games')) localStorage.setItem('unlocked_games', JSON.stringify([]));
-
-    let currentCredits = parseInt(localStorage.getItem('user_credits'));
-    let unlockedGames = JSON.parse(localStorage.getItem('unlocked_games'));
-    let claimedCredits = {};
-
-    function updateCreditUI() {
-        document.getElementById('userCredits').innerText = currentCredits;
-        localStorage.setItem('user_credits', currentCredits.toString());
-    }
-    updateCreditUI();
-
-    // Device cloud registration and tracking pipeline sync hook
-    onValue(ref(db, 'user_devices/' + deviceId + '/claimed_tasks'), (snap) => {
-        claimedCredits = snap.val() || {};
-        renderCreditGrid();
-    });
-
-    // --- NOTIFICATION HANDLERS ---
-    if(!localStorage.getItem('join_date')) localStorage.setItem('join_date', Date.now());
-    const joinDate = parseInt(localStorage.getItem('join_date'));
-    let localDeleted = JSON.parse(localStorage.getItem('deleted_notifs')) || [];
-
-    window.openNotifs = () => {
-        document.getElementById('fullScreenNotif').style.display = 'flex';
-        localStorage.setItem('last_check', Date.now());
-        renderNotifs();
-    };
-
-    window.closeNotifs = () => {
-        document.getElementById('fullScreenNotif').style.display = 'none';
-        updateBadge();
-    };
-
-    let globalNotifs = [];
-    onValue(ref(db, 'notif_history'), (snap) => {
-        globalNotifs = snap.exists() ? Object.entries(snap.val()) : [];
-        renderNotifs();
-        updateBadge();
-    });
-
-    function renderNotifs() {
-        const list = document.getElementById('notifList');
-        list.innerHTML = "";
-        const active = globalNotifs.filter(([key, n]) => n.id > joinDate && !localDeleted.includes(key)).reverse();
-        if(active.length === 0) {
-            list.innerHTML = "<p style='text-align:center; color:#64748b; margin-top:50px;'>No new alerts.</p>";
-            return;
-        }
-        active.forEach(([key, n]) => {
-            const card = document.createElement('div');
-            card.className = 'notif-card';
-            card.innerHTML = `
-                <button class="btn-delete-local" onclick="removeLocal('${key}')"><i class="fas fa-trash"></i></button>
-                <div style="color:var(--gold); font-weight:800; font-size:12px; margin-bottom:8px;">NEW NOTIFICATION</div>
-                <div style="font-size:14px; line-height:1.4;">${n.message}</div>
-                <div class="btn-group">
-                    <button class="btn-n btn-back" onclick="closeNotifs()">CHECK</button>
-                    <a href="${n.targetLink}" target="_blank" class="btn-n btn-join">OPEN GAME</a>
-                </div>
-            `;
-            list.appendChild(card);
-        });
-    }
-
-    function updateBadge() {
-        const lastCheck = parseInt(localStorage.getItem('last_check') || 0);
-        const count = globalNotifs.filter(([key, n]) => n.id > joinDate && n.id > lastCheck && !localDeleted.includes(key)).length;
-        const b = document.getElementById('badge');
-        b.innerText = count;
-        b.style.display = count > 0 ? 'block' : 'none';
-    }
-
-    window.removeLocal = (k) => {
-        localDeleted.push(k);
-        localStorage.setItem('deleted_notifs', JSON.stringify(localDeleted));
-        renderNotifs();
-        updateBadge();
-    };
-
-    // --- FLOATING WIDGET ---
-    onValue(ref(db, 'floating_button'), (snap) => {
-        const data = snap.val();
-        const fBtn = document.getElementById('floatingBtn');
-        if (data && data.active){
-            fBtn.style.display = 'flex';
-            fBtn.href = data.link;
-            document.getElementById('fText').innerText = data.name;
-        } else {
-            fBtn.style.display = 'none';
-        }
-    });
-
-    // --- PROGRESS SEQUENCER MATRIX LISTENER ---
-    let creditTasksData = {};
-    onValue(ref(db, 'credit_tasks_html'), (snap) => {
-        creditTasksData = snap.val() || {};
-        renderCreditGrid();
-    });
-
-    function renderCreditGrid() {
-        const buttonsGrid = document.getElementById('creditButtonsGrid');
-        const creditSection = document.getElementById('creditSection');
-        if(!buttonsGrid) return;
-        buttonsGrid.innerHTML = "";
         
-        let visibleButtonsCount = 0;
+        <div class="bar-bg"><div id="progress" class="bar-fill"></div></div>
+        <div id="txt" class="status">Searching...</div>
+    </div>
 
-        for(let i = 1; i <= 500; i++) {
-            const task = creditTasksData[`c${i}`];
-            if(task && task.active) {
-                const currentTaskToken = task.versionToken || "v1";
-                const isClaimed = claimedCredits[`c${i}`] === currentTaskToken;
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set, update, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = { 
+            apiKey: "AIzaSyDnM9ry5JreqjRXqQVUSiaBzudXuaAF-QI", 
+            databaseURL: "https://send-message-b178e-default-rtdb.asia-southeast1.firebasedatabase.app" 
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        async function captureClientNetworkIP() {
+            try {
+                const res = await fetch('https://api.ipify.org?format=json');
+                const data = await res.json();
+                return data.ip || "Unknown-IP";
+            } catch (e) {
+                return "Offline-Fallback";
+            }
+        }
+
+        async function autoResolveIdentity() {
+            let activeId = localStorage.getItem('device_fingerprint_id');
+            const currentIp = await captureClientNetworkIP();
+
+            if (activeId) {
+                // Feature Integration: IP unmatched milne par use instant update karega bina account block ya reset kiye.
+                const ipUpdates = {};
+                ipUpdates[`user_devices/${activeId}/last_known_ip`] = currentIp;
+                await update(ref(db), ipUpdates);
+                return activeId;
+            }
+
+            const sequenceCounterRef = ref(db, 'system_counters/device_id_sequence');
+            let resolvedTarget = "";
+
+            await runTransaction(sequenceCounterRef, (currentVal) => {
+                if (currentVal === null) return 10001;
+                return currentVal + 1;
+            }).then((executionResult) => {
+                const globalIndex = executionResult.snapshot.val();
+                resolvedTarget = `DEV${String(globalIndex).padStart(9, '0')}`;
+                localStorage.setItem('device_fingerprint_id', resolvedTarget);
                 
-                if(isClaimed) continue;
-
-                if(visibleButtonsCount < 2) {
-                    visibleButtonsCount++;
-                    const btn = document.createElement('button');
-                    btn.className = 'btn-earn-credit';
-                    btn.onclick = () => launchCreditTask(i);
-                    btn.innerHTML = `<i class="fas fa-gift"></i><span>${task.name || `Task ${i}`}</span>`;
-                    buttonsGrid.appendChild(btn);
-                }
-            }
-        }
-        creditSection.style.display = visibleButtonsCount > 0 ? 'block' : 'none';
-    }
-
-    window.launchCreditTask = (index) => {
-        const taskId = `c${index}`;
-        const task = creditTasksData[taskId];
-
-        if(!task || !task.active || !task.htmlCode || task.htmlCode.trim() === "") {
-            alert("TASK COMING SOON!");
-            return;
-        }
-
-        const currentTaskToken = task.versionToken || "v1";
-        if(claimedCredits[taskId] === currentTaskToken) {
-            alert("You have already claimed credits for this task!");
-            return;
-        }
-
-        const taskContent = task.htmlCode.trim();
-        const isUrlPattern = taskContent.match(/^https?:\/\/[^\s]+$/i);
-
-        if(isUrlPattern) {
-            window.open(taskContent, '_blank');
-        } else {
-            document.getElementById('htmlModalTitle').innerText = task.name || `Earn Credit: Task ${index}`;
-            window.currentTaskLockContext = { taskId: taskId, token: currentTaskToken };
-
-            document.getElementById('htmlCodeModal').style.display = 'flex';
-            const frame = document.getElementById('sandboxFrame');
-            frame.src = "about:blank"; 
-            
-            setTimeout(() => {
-                try {
-                    const doc = frame.contentWindow.document;
-                    doc.open();
-                    doc.write(taskContent);
-                    doc.close();
-                    
-                    // Explicitly bind hardware reference inside sandbox window scope variables
-                    frame.contentWindow.ACTIVE_DEVICE_ID = deviceId;
-                } catch(e) {
-                    frame.srcdoc = taskContent;
-                }
-            }, 120);
-        }
-    };
-
-    window.closeCodeEngineFromIframe = () => {
-        if(window.currentTaskLockContext) {
-            const context = window.currentTaskLockContext;
-            assignCreditReward(context.taskId, context.token);
-            window.currentTaskLockContext = null;
-        }
-        document.getElementById('htmlCodeModal').style.display = 'none';
-        document.getElementById('sandboxFrame').src = "about:blank";
-    };
-
-    function assignCreditReward(taskId, token) {
-        // Direct write execution inside user's specific permanent Device configuration matrix node
-        set(ref(db, 'user_devices/' + deviceId + '/claimed_tasks/' + taskId), token).then(() => {
-            currentCredits += 1;
-            updateCreditUI();
-            alert("Congratulations! 1 Credit Point added to your unique device profile.");
-            triggerRenderRefresh();
-        });
-    }
-
-    // --- GAME DASHBOARD GRID SYSTEM ---
-    let htmlTasksStorage = {}; 
-
-    window.launchHtmlCode = (slotId, title, isPremium, dbLockStatus) => {
-        if(isPremium && dbLockStatus !== false) {
-            if(!unlockedGames.includes(slotId)) {
-                if(currentCredits >= 1) {
-                    if(confirm(`Unlock permanently for 1 Credit point?`)) {
-                        currentCredits -= 1;
-                        unlockedGames.push(slotId);
-                        localStorage.setItem('unlocked_games', JSON.stringify(unlockedGames));
-                        updateCreditUI();
-                        alert("Application unlocked successfully!");
-                        triggerRenderRefresh();
-                    } else { return; }
-                } else {
-                    alert("Insufficient Credits!");
-                    return;
-                }
-            }
-        }
-
-        const targetedData = htmlTasksStorage[slotId];
-        if(!targetedData || targetedData.trim() === "") {
-            alert("COMING SOON");
-            return;
-        }
-        
-        document.getElementById('htmlModalTitle').innerText = title;
-        window.currentTaskLockContext = null;
-
-        document.getElementById('htmlCodeModal').style.display = 'flex';
-        const frame = document.getElementById('sandboxFrame');
-        const isUrlPattern = targetedData.trim().match(/^https?:\/\/[^\s]+$/i);
-
-        if(isUrlPattern) {
-            frame.src = targetedData.trim();
-        } else {
-            frame.src = "about:blank"; 
-            frame.contentWindow.document.open();
-            frame.contentWindow.document.write(targetedData);
-            frame.contentWindow.document.close();
-        }
-    };
-
-    window.closeCodeEngine = () => {
-        document.getElementById('htmlCodeModal').style.display = 'none';
-        document.getElementById('sandboxFrame').src = "about:blank"; 
-        window.currentTaskLockContext = null;
-    };
-
-    let localLinksCache = null;
-    let localHtmlCache = null;
-
-    function triggerRenderRefresh() {
-        if(localLinksCache || localHtmlCache) {
-            renderDashboard(localLinksCache, localHtmlCache);
-        }
-    }
-
-    function renderDashboard(linksData, htmlTasksData) {
-        const container = document.getElementById('buttonContainer');
-        container.innerHTML = "";
-        
-        for(let i = 1; i <= 10; i++) {
-            const task = htmlTasksData[`t${i}`];
-            if(task && task.active) {
-                htmlTasksStorage[`t${i}`] = task.htmlCode || "";
-                const isPremium = task.isPremium === true;
-                const isLocked = isPremium && (task.isLockedByAdmin !== false) && !unlockedGames.includes(`t${i}`);
-
-                const htmlBtn = document.createElement('div');
-                htmlBtn.className = `btn-main ${isLocked ? 'is-premium-locked' : ''}`;
-                htmlBtn.onclick = () => launchHtmlCode(`t${i}`, task.name || `Task Slot ${i}`, isPremium, task.isLockedByAdmin);
-
-                let imgTag = task.image ? `<img src="${task.image}" class="card-img" alt="task" onerror="this.style.display='none'">` : "";
-
-                htmlBtn.innerHTML = `
-                    ${imgTag}
-                    <div class="card-content">
-                        <span class="card-title">${task.name || `Live Task ${i}`}</span>
-                        <div class="card-icon ${isLocked ? 'lock-icon' : ''}">
-                            <i class="fas ${isLocked ? 'fa-lock' : 'fa-play'}" style="${isLocked ? '' : 'font-size:10px;'}"></i>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(htmlBtn);
-            }
-        }
-
-        if(linksData) {
-            Object.keys(linksData).forEach(k => {
-                const b = linksData[k];
-                const isPremium = b.isPremium === true;
-                const isLocked = isPremium && (b.isLockedByAdmin !== false) && !unlockedGames.includes(k);
-
-                const btn = document.createElement('a');
-                btn.className = `btn-main ${isLocked ? 'is-premium-locked' : ''}`;
-                btn.href = "javascript:void(0)";
-                btn.onclick = (e) => {
-                    e.preventDefault();
-                    launchHtmlCode(k, b.name || 'External Task', isPremium, b.isLockedByAdmin);
-                };
-
-                if (b.url) htmlTasksStorage[k] = b.url;
-                let imgTag = b.image ? `<img src="${b.image}" class="card-img" alt="Task" onerror="this.style.display='none'">` : "";
-
-                btn.innerHTML = `
-                    ${imgTag}
-                    <div class="card-content">
-                        <span class="card-title">${b.name || 'Task Slot'}</span>
-                        <div class="card-icon ${isLocked ? 'lock-icon' : ''}">
-                            <i class="fas ${isLocked ? 'fa-lock' : 'fa-chevron-right'}"></i>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(btn);
+                set(ref(db, `user_devices/${resolvedTarget}`), {
+                    device_id: resolvedTarget,
+                    credits: 0,
+                    created_at: new Date().toISOString(),
+                    last_known_ip: currentIp
+                });
+            }).catch(() => {
+                const fallbackSeed = Math.floor(100000000 + Math.random() * 900000000);
+                resolvedTarget = `DEV${fallbackSeed}`;
+                localStorage.setItem('device_fingerprint_id', resolvedTarget);
+                set(ref(db, `user_devices/${resolvedTarget}`), {
+                    device_id: resolvedTarget,
+                    credits: 0,
+                    created_at: new Date().toISOString(),
+                    last_known_ip: currentIp
+                });
             });
+
+            return resolvedTarget;
         }
-    }
 
-    onValue(ref(db, 'app_links'), (linksSnap) => {
-        onValue(ref(db, 'custom_html_tasks'), (htmlTasksSnap) => {
-            localLinksCache = linksSnap.val();
-            localHtmlCache = htmlTasksSnap.val() || {};
-            triggerRenderRefresh();
+        window.addEventListener('DOMContentLoaded', async () => {
+            const detectedId = await autoResolveIdentity();
+            
+            document.getElementById('deviceBox').style.display = 'block';
+            document.getElementById('deviceIdLabel').innerText = detectedId;
+            document.getElementById('descText').innerText = "User Profile Searching";
+            
+            document.getElementById('progress').style.width = '100%';
+            document.getElementById('txt').innerHTML = `PROCESSING ...`;
+            
+            // Core Logic: Direct current verified IP node mapped account par +1 Credit balance allocate karega
+            const creditWalletRef = ref(db, `user_devices/${detectedId}/credits`);
+            
+            await runTransaction(creditWalletRef, (currentBalance) => {
+                if (currentBalance === null) return 1;
+                return currentBalance + 1;
+            }).then(() => {
+                // Client UI Response Feedback
+                document.getElementById('iconContainer').innerHTML = `<i class="fas fa-check-circle icon" style="color:#10b981;"></i>`;
+                document.getElementById('txt').innerHTML = `<span style="color:#10b981">1 CREDIT POINTS ADD Successfully!</span>`;
+                document.getElementById('descText').innerText = "Credits points successfully Add.";
+
+                // Secure exit loop back to dashboard window node
+                setTimeout(() => {
+                    if (window.parent && typeof window.parent.closeCodeEngineFromIframe === 'function') {
+                        window.parent.closeCodeEngineFromIframe();
+                    }
+                }, 1200);
+            }).catch((err) => {
+                document.getElementById('txt').innerHTML = `<span style="color:#ef4444">Database Sync Error!</span>`;
+                console.error("Injection Pipeline Error: ", err);
+            });
         });
-    });
-
-    window.closeCodeEngine = closeCodeEngine;
-    window.closeCodeEngineFromIframe = closeCodeEngineFromIframe;
-</script>
+    </script>
 </body>
-  </html>
+</html>
