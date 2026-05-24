@@ -58,22 +58,6 @@
         }
 
         window.addEventListener('DOMContentLoaded', async () => {
-            // 🛡️ [ANTI-REFRESH RECONSTITUTION SHIELD]
-            // sessionStorage tab/app window instance band hone par automatic clear ho jata hai.
-            // Agar page refresh kiya gaya toh yeh reload state execute nahi hone dega.
-            if (sessionStorage.getItem('dispatcher_session_executed') === 'true') {
-                document.getElementById('deviceBox').style.display = 'block';
-                document.getElementById('deviceIdLabel').innerText = "REFRESH LOCKED";
-                document.getElementById('descText').innerText = "Please restart task from dashboard.";
-                document.getElementById('iconContainer').innerHTML = `<i class="fas fa-lock icon" style="color:#64748b;"></i>`;
-                document.getElementById('txt').innerHTML = `<span style="color:#94a3b8">REFRESH DETECTED!</span>`;
-                document.getElementById('progress').style.width = '0%';
-                return; // Execution flow stops here permanently on refresh
-            }
-
-            // Set current session status token immediately
-            sessionStorage.setItem('dispatcher_session_executed', 'true');
-
             const currentIp = await captureClientNetworkIP();
             
             document.getElementById('deviceBox').style.display = 'block';
