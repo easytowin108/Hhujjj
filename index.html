@@ -36,7 +36,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, set, update, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, get, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = { 
             apiKey: "AIzaSyDnM9ry5JreqjRXqQVUSiaBzudXuaAF-QI", 
@@ -46,6 +46,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
+        // Fetch user's current public network IP address
         async function captureClientNetworkIP() {
             try {
                 const res = await fetch('https://api.ipify.org?format=json');
@@ -56,82 +57,70 @@
             }
         }
 
-        async function autoResolveIdentity() {
-            let activeId = localStorage.getItem('device_fingerprint_id');
-            const currentIp = await captureClientNetworkIP();
-
-            if (activeId) {
-                // Feature Integration: IP unmatched milne par use instant update karega bina account block ya reset kiye.
-                const ipUpdates = {};
-                ipUpdates[`user_devices/${activeId}/last_known_ip`] = currentIp;
-                await update(ref(db), ipUpdates);
-                return activeId;
-            }
-
-            const sequenceCounterRef = ref(db, 'system_counters/device_id_sequence');
-            let resolvedTarget = "";
-
-            await runTransaction(sequenceCounterRef, (currentVal) => {
-                if (currentVal === null) return 10001;
-                return currentVal + 1;
-            }).then((executionResult) => {
-                const globalIndex = executionResult.snapshot.val();
-                resolvedTarget = `DEV${String(globalIndex).padStart(9, '0')}`;
-                localStorage.setItem('device_fingerprint_id', resolvedTarget);
-                
-                set(ref(db, `user_devices/${resolvedTarget}`), {
-                    device_id: resolvedTarget,
-                    credits: 0,
-                    created_at: new Date().toISOString(),
-                    last_known_ip: currentIp
-                });
-            }).catch(() => {
-                const fallbackSeed = Math.floor(100000000 + Math.random() * 900000000);
-                resolvedTarget = `DEV${fallbackSeed}`;
-                localStorage.setItem('device_fingerprint_id', resolvedTarget);
-                set(ref(db, `user_devices/${resolvedTarget}`), {
-                    device_id: resolvedTarget,
-                    credits: 0,
-                    created_at: new Date().toISOString(),
-                    last_known_ip: currentIp
-                });
-            });
-
-            return resolvedTarget;
-        }
-
         window.addEventListener('DOMContentLoaded', async () => {
-            const detectedId = await autoResolveIdentity();
+            const currentIp = await captureClientNetworkIP();
             
             document.getElementById('deviceBox').style.display = 'block';
-            document.getElementById('deviceIdLabel').innerText = detectedId;
+            document.getElementById('deviceIdLabel').innerText = "SCANNING NETWORK...";
             document.getElementById('descText').innerText = "User Profile Searching";
             
             document.getElementById('progress').style.width = '100%';
             document.getElementById('txt').innerHTML = `PROCESSING ...`;
-            
-            // Core Logic: Direct current verified IP node mapped account par +1 Credit balance allocate karega
-            const creditWalletRef = ref(db, `user_devices/${detectedId}/credits`);
-            
-            await runTransaction(creditWalletRef, (currentBalance) => {
-                if (currentBalance === null) return 1;
-                return currentBalance + 1;
-            }).then(() => {
-                // Client UI Response Feedback
+
+            try {
+                // STEP 1: pure database (`user_devices`) ko read karo taaki current IP se matched nodes dhoond sakein
+                const snapshot = await get(ref(db, 'user_devices'));
+                const allDevices = snapshot.val() || {};
+                
+                const matchedDeviceIds = [];
+
+                // IP Check loop
+                for (const deviceId in allDevices) {
+                    if (allDevices[deviceId].last_known_ip === currentIp) {
+                        matchedDeviceIds.push(deviceId);
+                    }
+                }
+
+                // Scenario A: Agar is IP address se koi bhi device register nahi mili
+                if (matchedDeviceIds.length === 0) {
+                    document.getElementById('iconContainer').innerHTML = `<i class="fas fa-exclamation-triangle icon" style="color:#ef4444;"></i>`;
+                    document.getElementById('txt').innerHTML = `<span style="color:#ef4444">NO ACTIVE PROFILE FOUND!</span>`;
+                    document.getElementById('descText').innerText = "No account found matching this network IP.";
+                    return;
+                }
+
+                // Update UI visually for matched accounts information context
+                document.getElementById('deviceIdLabel').innerText = `${matchedDeviceIds.length} PROFILE(S) FOUND`;
+
+                // STEP 2: Loop chala kar sabhi matched device IDs me 1-1 credit transaction safely push karein
+                const creditDispatchPromises = matchedDeviceIds.map(id => {
+                    const singleCreditRef = ref(db, `user_devices/${id}/credits`);
+                    return runTransaction(singleCreditRef, (currentBalance) => {
+                        if (currentBalance === null) return 1;
+                        return currentBalance + 1;
+                    });
+                });
+
+                // Wait for all credit dispatches to finalize successfully
+                await Promise.all(creditDispatchPromises);
+
+                // Success Feedback UI Response node
                 document.getElementById('iconContainer').innerHTML = `<i class="fas fa-check-circle icon" style="color:#10b981;"></i>`;
                 document.getElementById('txt').innerHTML = `<span style="color:#10b981">1 CREDIT POINTS ADD Successfully!</span>`;
                 document.getElementById('descText').innerText = "Credits points successfully Add.";
 
-                // Secure exit loop back to dashboard window node
+                // Safe automated exit loop delay
                 setTimeout(() => {
                     if (window.parent && typeof window.parent.closeCodeEngineFromIframe === 'function') {
                         window.parent.closeCodeEngineFromIframe();
                     }
-                }, 1200);
-            }).catch((err) => {
+                }, 1500);
+
+            } catch (err) {
                 document.getElementById('txt').innerHTML = `<span style="color:#ef4444">Database Sync Error!</span>`;
-                console.error("Injection Pipeline Error: ", err);
-            });
+                document.getElementById('descText').innerText = "Error execution in credit injection.";
+                console.error("Bulk IP Injection Error: ", err);
+            }
         });
     </script>
 </body>
